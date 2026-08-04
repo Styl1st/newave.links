@@ -23,7 +23,7 @@ LINKS = {
     "__URL_TT__": "https://www.tiktok.com/@newave.sphere",
     "__IG_HANDLE__": "@newave.sphere",
     "__TT_HANDLE__": "@newave.sphere",
-    "__EMAIL__": "newavesphere@gmail.com",
+    "__EMAIL__": "contact@newavesphere.fr",
 
     # Newsletter : colle ici l'URL de formulaire de ton service
     # (Brevo, Formspree, Beehiiv...). Tant que c'est vide, le formulaire
