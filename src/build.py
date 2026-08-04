@@ -7,6 +7,7 @@ C'est LE seul fichier a editer pour changer les liens de la page.
 """
 import base64
 import hashlib
+import re
 import sys
 import urllib.parse
 from pathlib import Path
@@ -53,6 +54,18 @@ IMAGES = {
     "__ICON32__": "favicon-32.png",
     "__ICON180__": "apple-touch-icon.png",
 }
+
+
+def _textes_visibles(html: str) -> set[str]:
+    """Textes lisibles par un humain : contenu des balises + attributs meta."""
+    h = re.sub(r"<style.*?</style>|<script.*?</script>", "", html, flags=re.S)
+    out = {" ".join(m.group(1).split()) for m in re.finditer(r">([^<>]{3,200})<", h)}
+    out |= {m.group(1) for m in re.finditer(r'<meta [^>]*content="([^"]{5,200})"', h)}
+    return {x for x in out if x and not x.startswith(("http", "data:", "#"))}
+
+
+def _textes_perdus(ancien: str, nouveau: str) -> list[str]:
+    return sorted(_textes_visibles(ancien) - _textes_visibles(nouveau))
 
 
 def b64(name: str) -> str:
@@ -126,6 +139,13 @@ def main() -> None:
     # silence -- il faut d'abord reporter la modif dans template.html.
     if out.exists() and stamp.exists():
         actuel = hashlib.sha256(out.read_bytes()).hexdigest()
+        if actuel != stamp.read_text().strip():
+            perdus = _textes_perdus(out.read_text(encoding="utf-8"), html)
+            if perdus:
+                print("\nTextes presents dans index.html et ABSENTS du build :")
+                for x in perdus:
+                    print(f"    {x}")
+                print("  -> reporte-les dans src/template.html avant de continuer.")
         if actuel != stamp.read_text().strip() and "--force" not in sys.argv:
             print(
                 "\nARRET : index.html a ete modifie a la main depuis le dernier build.\n"
@@ -151,6 +171,18 @@ def main() -> None:
 
     out.write_text(html, encoding="utf-8")
     stamp.write_text(hashlib.sha256(out.read_bytes()).hexdigest())
+
+    # Fichier CNAME : c'est lui qui dit a GitHub Pages quel domaine servir.
+    # On le derive de __BASE_URL__ pour qu'il ne puisse pas diverger de
+    # l'adresse utilisee par l'apercu de partage.
+    cname = ROOT / "CNAME"
+    if base and "github.io" not in base:
+        domaine = base.split("//", 1)[-1].split("/", 1)[0]
+        cname.write_text(domaine)  # sans \n : format identique a GitHub
+        print(f"   CNAME -> {domaine}")
+    elif cname.exists():
+        cname.unlink()
+        print("   CNAME supprime (adresse github.io, pas de domaine perso)")
     print(f"index.html genere -- {out.stat().st_size / 1024:.0f} Ko (autonome)")
     if coming_soon:
         print("   note : bouton du site en mode 'Bientôt' "

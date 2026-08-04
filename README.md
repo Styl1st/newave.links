@@ -220,8 +220,35 @@ La page sera sur `https://<user>.github.io/<repo>/`.
 
 ### Nom de domaine
 
-Ajoute un fichier `CNAME` à la racine contenant ton domaine, puis fais pointer
-un enregistrement DNS de type `CNAME` vers `<user>.github.io`.
+**Une seule ligne à changer** : `__BASE_URL__` dans `src/build.py`.
+
+```python
+"__BASE_URL__": "https://newavesphere.fr",   # sans slash final
+```
+
+`build.py` s'occupe du reste : il génère le fichier `CNAME` à la racine (c'est
+lui qui dit à GitHub Pages quel domaine servir) et met à jour l'URL de l'aperçu
+de partage. Si tu remets une adresse `github.io`, le `CNAME` est supprimé
+automatiquement.
+
+`verify.py` bloque si le `CNAME` et l'`og:image` divergent — sinon les partages
+casseraient sans le moindre message d'erreur.
+
+#### Côté registrar
+
+Quatre enregistrements **A** sur le domaine nu :
+
+```
+185.199.108.153
+185.199.109.153
+185.199.110.153
+185.199.111.153
+```
+
+Un enregistrement **CNAME** pour `www` vers `<user>.github.io`.
+
+Puis **Settings → Pages → Custom domain** sur GitHub, et coche **Enforce
+HTTPS** une fois la propagation faite (jusqu'à 24 h, souvent bien moins).
 
 ---
 

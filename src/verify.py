@@ -192,6 +192,20 @@ if og_img:
 else:
     warns.append("pas d'og:image : aucun apercu au partage du lien")
 
+# --- coherence du domaine ---------------------------------------------
+# Un CNAME qui ne correspond pas a l'URL de l'apercu = partages casses
+# sans aucun message d'erreur. On verrouille.
+cname_file = ROOT / "CNAME"
+if cname_file.exists():
+    domaine = cname_file.read_text().strip()
+    if og_img and domaine and domaine not in og_img.group(1):
+        fails.append(
+            f"CNAME dit '{domaine}' mais og:image pointe vers "
+            f"'{og_img.group(1)}' -- mets a jour __BASE_URL__ dans build.py"
+        )
+    else:
+        print(f"OK  domaine coherent entre CNAME et apercu : {domaine}")
+
 # --- 7. defilement mobile --------------------------------------------
 # overflow-x:hidden sur <body> en fait un conteneur de defilement : combine
 # a des calques position:fixed, le bas de page devient inatteignable sur
