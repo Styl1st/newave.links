@@ -21,6 +21,12 @@ LINKS = {
     "__IG_HANDLE__": "@newave.sphere",
     "__TT_HANDLE__": "@newave.sphere",
     "__EMAIL__": "newavesphere@gmail.com",
+
+    # Newsletter : colle ici l'URL de formulaire de ton service
+    # (Brevo, Formspree, Beehiiv...). Tant que c'est vide, le formulaire
+    # est masque et remplace par un lien mail -- on ne fait jamais croire
+    # a quelqu'un qu'il est inscrit alors que rien n'est collecte.
+    "__NL_ENDPOINT__": "",
 }
 # =====================================================================
 
@@ -59,7 +65,12 @@ def main() -> None:
     # Le site du projet n'est pas encore en ligne -> bouton non cliquable
     # plutot qu'un lien mort qui ne fait rien quand on tape dessus.
     coming_soon = LINKS["__URL_SITE__"].strip() in ("", "#")
+    # Newsletter non branchee -> formulaire masque des le HTML genere
+    no_newsletter = not LINKS["__NL_ENDPOINT__"].strip()
+
     state = {
+        "__NL_STATE__": " is-off" if no_newsletter else "",
+        "__FB_STATE__": " show" if no_newsletter else "",
         "__SITE_STATE__": " soon" if coming_soon else "",
         "__SITE_TAG__": "Bientôt" if coming_soon else "Le projet",
         "__SITE_SUB__": (
@@ -83,6 +94,9 @@ def main() -> None:
     if coming_soon:
         print("   note : bouton du site en mode 'Bientôt' "
               "(renseigne __URL_SITE__ pour l'activer)")
+    if no_newsletter:
+        print("   note : newsletter non branchee -> lien mail affiche "
+              "(renseigne __NL_ENDPOINT__ pour activer le formulaire)")
 
 
 if __name__ == "__main__":

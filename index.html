@@ -49,24 +49,42 @@ body{
 
 /* ---------- fond : dégradé mesh violet / lavande / rose ---------- */
 .bg{
-  position:fixed; inset:0; z-index:0; pointer-events:none;
-  background:
-    radial-gradient(circle at 78% 12%, rgba(233,150,220,.85) 0%, rgba(233,150,220,0) 48%),
-    radial-gradient(circle at 15% 30%, rgba(140,120,245,.9) 0%, rgba(140,120,245,0) 52%),
-    radial-gradient(circle at 50% 52%, rgba(226,182,246,.95) 0%, rgba(226,182,246,0) 55%),
-    radial-gradient(circle at 88% 72%, rgba(150,175,245,.8) 0%, rgba(150,175,245,0) 50%),
-    radial-gradient(circle at 12% 88%, rgba(190,150,240,.85) 0%, rgba(190,150,240,0) 50%),
-    linear-gradient(168deg,#542ba8 0%,#8b5ad8 26%,#c084e0 50%,#8e83e2 74%,#5a35b4 100%);
-  animation:drift 26s ease-in-out infinite alternate;
+  position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden;
+  background:linear-gradient(168deg,#542ba8 0%,#8b5ad8 26%,#c084e0 50%,
+                             #8e83e2 74%,#5a35b4 100%);
 }
-@keyframes drift{
-  from{transform:scale(1) translate3d(0,0,0)}
-  to{transform:scale(1.12) translate3d(0,-1.5%,0)}
+/* deux nappes de couleur qui derivent en sens contraire :
+   c'est ce qui donne la sensation de mouvement liquide */
+.bg::before,.bg::after{
+  content:''; position:absolute; inset:-35%;
+  will-change:transform;
+}
+.bg::before{
+  background:
+    radial-gradient(circle at 32% 28%, rgba(233,150,220,.75) 0%, transparent 46%),
+    radial-gradient(circle at 72% 62%, rgba(140,120,245,.72) 0%, transparent 46%),
+    radial-gradient(circle at 50% 92%, rgba(190,150,240,.65) 0%, transparent 44%);
+  animation:nappe1 34s ease-in-out infinite alternate;
+}
+.bg::after{
+  background:
+    radial-gradient(circle at 68% 22%, rgba(150,175,245,.62) 0%, transparent 44%),
+    radial-gradient(circle at 22% 72%, rgba(226,182,246,.7) 0%, transparent 46%),
+    radial-gradient(circle at 88% 84%, rgba(197,140,235,.6) 0%, transparent 42%);
+  animation:nappe2 47s ease-in-out infinite alternate;
+}
+@keyframes nappe1{
+  from{transform:translate3d(-5%,-4%,0) scale(1)     rotate(0deg)}
+  to  {transform:translate3d(6%,5%,0)   scale(1.18)  rotate(8deg)}
+}
+@keyframes nappe2{
+  from{transform:translate3d(5%,4%,0)   scale(1.14)  rotate(0deg)}
+  to  {transform:translate3d(-6%,-5%,0) scale(1)     rotate(-9deg)}
 }
 
 /* grain léger pour casser les bandes du dégradé */
 .grain{
-  position:fixed; inset:-50%; z-index:1; pointer-events:none;
+  position:fixed; inset:-50%; z-index:2; pointer-events:none;
   opacity:.16; mix-blend-mode:overlay;
   background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22180%22%20height%3D%22180%22%3E%3Cfilter%20id%3D%22n%22%3E%3CfeTurbulence%20type%3D%22fractalNoise%22%20baseFrequency%3D%220.85%22%20numOctaves%3D%223%22%20stitchTiles%3D%22stitch%22/%3E%3C/filter%3E%3Crect%20width%3D%22180%22%20height%3D%22180%22%20filter%3D%22url%28%23n%29%22%20opacity%3D%220.55%22/%3E%3C/svg%3E");
   background-size:180px 180px;
@@ -77,7 +95,7 @@ body{
    l'image porte la rotation + l'animation de flottement.
    (deux couches = pas de conflit entre inline style et keyframes) */
 .chrome{
-  position:fixed; z-index:2; pointer-events:none;
+  position:fixed; z-index:3; pointer-events:none;
   will-change:transform;
   transition:translate .5s cubic-bezier(.2,.8,.3,1);
 }
@@ -110,16 +128,34 @@ body{
 
 /* ---------- glyphes décoratifs verticaux (repris des visuels) ---------- */
 .glyphs{
-  position:fixed; top:50%; translate:0 -50%; z-index:2;
-  display:flex; flex-direction:column; gap:clamp(14px,3.4vh,26px);
-  font-size:clamp(13px,3.2vw,17px); font-weight:800; line-height:1;
-  color:rgba(255,255,255,.5);
-  text-shadow:0 1px 2px rgba(80,40,150,.35);
+  --gh: clamp(30px,5.2vh,46px);   /* pas vertical entre deux glyphes */
+  position:fixed; top:0; bottom:0; z-index:1;   /* z-index 1 = sous le chrome */
+  overflow:hidden;
+  font-size:clamp(13px,3.2vw,17px); font-weight:800;
+  color:rgba(255,255,255,.42);
+  text-shadow:0 1px 2px rgba(80,40,150,.3);
   pointer-events:none; user-select:none;
+  /* fondu aux extremites : les glyphes naissent et meurent en douceur */
+  -webkit-mask:linear-gradient(180deg,transparent,#000 12%,#000 88%,transparent);
+  mask:linear-gradient(180deg,transparent,#000 12%,#000 88%,transparent);
 }
 .glyphs.left{left:clamp(6px,2.4vw,20px)}
 .glyphs.right{right:clamp(6px,2.4vw,20px)}
-.glyphs span{display:block}
+.glyph-track{
+  display:flex; flex-direction:column;
+  will-change:transform;
+  animation:defile 30s linear infinite;
+}
+.glyphs.right .glyph-track{animation-duration:38s; animation-direction:reverse}
+.glyph-track span{
+  display:block; height:var(--gh); line-height:var(--gh);
+  text-align:center;
+}
+/* la piste contient 2 fois la meme sequence : -50% = une sequence pile */
+@keyframes defile{
+  from{transform:translateY(0)}
+  to  {transform:translateY(-50%)}
+}
 
 /* ---------- contenu ---------- */
 .wrap{
@@ -314,6 +350,13 @@ body{
 .field button:hover{transform:translateY(-2px); box-shadow:0 8px 20px rgba(35,12,85,.38), inset 0 1px 0 #fff}
 .field button:active{transform:translateY(0)}
 .note{margin:10px 0 0; font-size:11.5px; color:rgba(255,255,255,.78)}
+.field.is-off{display:none}
+.fallback{
+  display:none; margin:0; font-size:12.5px; line-height:1.5;
+  color:rgba(255,255,255,.88);
+}
+.fallback.show{display:block}
+.fallback a{color:#fff; font-weight:700; text-decoration:underline; text-underline-offset:2px}
 .note a{color:#fff; text-decoration:underline; text-underline-offset:2px}
 .ok{
   margin:11px 0 0; font-size:12.5px; font-weight:700; color:#fff;
@@ -341,7 +384,7 @@ footer p{
 /* ---------- responsive ---------- */
 @media (min-width:560px){
   .glyphs{gap:26px}
-  .c-ml,.c-mr{display:block; position:fixed; z-index:2; width:min(22vw,240px);
+  .c-ml,.c-mr{display:block; position:fixed; z-index:3; width:min(22vw,240px);
               pointer-events:none;
               filter:drop-shadow(0 18px 34px rgba(45,15,95,.4));
               transition:translate .5s cubic-bezier(.2,.8,.3,1)}
@@ -380,10 +423,10 @@ footer p{
 
 <!-- glyphes latéraux -->
 <div class="glyphs left" aria-hidden="true">
-  <span>-</span><span>+</span><span>~</span><span>-</span><span>+</span><span>~</span><span>+</span>
+    <div class="glyph-track"><span>-</span><span>+</span><span>~</span><span>-</span><span>+</span><span>~</span><span>+</span><span>-</span><span>~</span><span>+</span><span>~</span><span>-</span><span>-</span><span>+</span><span>~</span><span>-</span><span>+</span><span>~</span><span>+</span><span>-</span><span>~</span><span>+</span><span>~</span><span>-</span></div>
 </div>
 <div class="glyphs right" aria-hidden="true">
-  <span>+</span><span>~</span><span>-</span><span>+</span><span>~</span><span>+</span><span>~</span>
+    <div class="glyph-track"><span>+</span><span>~</span><span>-</span><span>+</span><span>~</span><span>+</span><span>~</span><span>-</span><span>+</span><span>-</span><span>~</span><span>+</span><span>+</span><span>~</span><span>-</span><span>+</span><span>~</span><span>+</span><span>~</span><span>-</span><span>+</span><span>-</span><span>~</span><span>+</span></div>
 </div>
 
 <main class="wrap">
@@ -394,9 +437,10 @@ footer p{
 
   <section class="about">
     <h2>Le projet</h2>
-    <p>Chaque pièce est le fruit d'un <span class="hl">processus de création engagé</span>, mêlant
-    upcycling, recherche et attention aux détails. Ici, vous ne trouverez qu'un
-    <b>unique exemplaire</b> de chaque article.</p>
+    <p><b>NEWAVE SPHERE</b> est un <span class="hl">média indépendant</span> qui met en
+    lumière celles et ceux qui créent en dehors des circuits classiques : marques
+    naissantes, pièces uniques, démarches qui prennent le temps de bien faire.
+    Un point de ralliement pour ceux qui cherchent autre chose.</p>
   </section>
 
   <ul class="links">
@@ -456,10 +500,14 @@ footer p{
   <section class="contact">
     <h2>Rejoins la communauté</h2>
     <p>Drops, pop-up stores et coulisses du projet — avant tout le monde.</p>
-    <form class="field" id="nl" novalidate>
+    <form class="field is-off" id="nl" action="" method="POST" novalidate>
       <input type="email" name="email" placeholder="ton@email.com" autocomplete="email" required aria-label="Adresse email">
       <button type="submit">Je m'inscris</button>
     </form>
+    <p class="fallback show" id="fallback">
+      Inscriptions bientôt ouvertes — en attendant, écris-moi à
+      <a href="mailto:newavesphere@gmail.com">newavesphere@gmail.com</a> et je t'ajoute à la liste.
+    </p>
     <p class="ok" id="ok">
       <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5.5 5.5L20 6.5"/></svg>
       C'est noté, à très vite.
@@ -484,25 +532,41 @@ document.querySelectorAll('.link.soon').forEach(function(a){
   a.addEventListener('click', function(e){ e.preventDefault(); });
 });
 
-/* Newsletter — remplace l'action ci-dessous par ton endpoint
-   (Mailchimp, Brevo, Formspree, Beehiiv...) quand tu en auras un. */
-var NEWSLETTER_ENDPOINT = ""; // ex: "https://formspree.io/f/xxxxxx"
+/* Newsletter.
+   L'endpoint est renseigne dans src/build.py (NEWSLETTER_ENDPOINT).
+   Tant qu'il est vide, on n'affiche PAS de fausse confirmation : le
+   formulaire est remplace par un lien mail, pour ne pas faire croire
+   aux visiteurs qu'ils sont inscrits alors que rien n'est collecte. */
+var form = document.getElementById('nl');
+var endpoint = form.getAttribute('action');
 
-document.getElementById('nl').addEventListener('submit', function(e){
-  e.preventDefault();
-  var input = this.querySelector('input');
-  if(!input.checkValidity()){ input.focus(); input.reportValidity(); return; }
+/* sans endpoint, l'etat est deja fige dans le HTML au moment du build :
+   rien a faire ici, la page se comporte pareil avec ou sans JavaScript */
+if(endpoint){
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var input = this.querySelector('input');
+    if(!input.checkValidity()){ input.focus(); input.reportValidity(); return; }
 
-  if(NEWSLETTER_ENDPOINT){
-    fetch(NEWSLETTER_ENDPOINT,{
+    var btn = this.querySelector('button');
+    btn.disabled = true;
+    btn.textContent = 'Envoi...';
+
+    fetch(endpoint, {
       method:'POST',
       headers:{'Accept':'application/json'},
       body:new FormData(this)
-    }).catch(function(){});
-  }
-  this.style.display='none';
-  document.getElementById('ok').classList.add('show');
-});
+    }).then(function(r){
+      if(!r.ok) throw new Error(r.status);
+      form.style.display='none';
+      document.getElementById('ok').classList.add('show');
+    }).catch(function(){
+      btn.disabled = false;
+      btn.textContent = "Je m'inscris";
+      document.getElementById('fallback').classList.add('show');
+    });
+  });
+}
 
 /* léger parallaxe des blobs (desktop uniquement) */
 if(window.matchMedia('(min-width:900px)').matches &&
