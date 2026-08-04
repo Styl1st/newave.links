@@ -29,6 +29,12 @@ LINKS = {
     # est masque et remplace par un lien mail -- on ne fait jamais croire
     # a quelqu'un qu'il est inscrit alors que rien n'est collecte.
     "__NL_ENDPOINT__": "",
+
+    # Adresse publique du site, SANS slash final.
+    # L'image d'apercu (partage en DM, Discord, WhatsApp...) exige une URL
+    # absolue : c'est la seule raison d'etre de ce reglage. A mettre a jour
+    # le jour ou tu passes sur un nom de domaine.
+    "__BASE_URL__": "https://styl1st.github.io/newave-linktree",
 }
 # =====================================================================
 
@@ -76,7 +82,23 @@ def main() -> None:
     # Newsletter non branchee -> formulaire masque des le HTML genere
     no_newsletter = not LINKS["__NL_ENDPOINT__"].strip()
 
+    # Apercu de partage : uniquement si l'adresse publique est renseignee,
+    # car og:image n'accepte pas d'URL relative.
+    base = LINKS["__BASE_URL__"].strip().rstrip("/")
+    og_url = f"{base}/og-image.jpg" if base else ""
+
     state = {
+        "__OG_TAGS__": (
+            f'\n<meta property="og:url" content="{base}/">'
+            f'\n<meta property="og:image" content="{og_url}">'
+            f'\n<meta property="og:image:width" content="1200">'
+            f'\n<meta property="og:image:height" content="630">'
+            f'\n<meta property="og:image:alt" content="Logo NEWAVE SPHERE">'
+            if base else ""
+        ),
+        "__TW_TAGS__": (
+            f'\n<meta name="twitter:image" content="{og_url}">' if base else ""
+        ),
         "__NL_STATE__": " is-off" if no_newsletter else "",
         "__FB_STATE__": " show" if no_newsletter else "",
         "__SITE_STATE__": " soon" if coming_soon else "",
@@ -133,6 +155,9 @@ def main() -> None:
     if coming_soon:
         print("   note : bouton du site en mode 'Bientôt' "
               "(renseigne __URL_SITE__ pour l'activer)")
+    if not base:
+        print("   note : apercu de partage desactive "
+              "(renseigne __BASE_URL__ pour l'activer)")
     if no_newsletter:
         print("   note : newsletter non branchee -> lien mail affiche "
               "(renseigne __NL_ENDPOINT__ pour activer le formulaire)")

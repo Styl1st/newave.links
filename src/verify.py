@@ -168,6 +168,30 @@ else:
         else:
             print("OK  voile .scrim : radial transparent a 100%, aucun bord lateral")
 
+# --- apercu de partage ------------------------------------------------
+# og:image exige une URL ABSOLUE : une URL relative casse silencieusement
+# l'apercu sur Instagram, Discord, WhatsApp...
+og_img = re.search(r'og:image" content="([^"]*)"', html)
+if og_img:
+    url = og_img.group(1)
+    if not url.startswith(("http://", "https://")):
+        fails.append(f"og:image n'est pas une URL absolue : {url}")
+    elif not (ROOT / url.rsplit("/", 1)[-1]).exists():
+        fails.append(f"og:image pointe vers un fichier absent : {url}")
+    else:
+        from PIL import Image as _I
+        f = ROOT / url.rsplit("/", 1)[-1]
+        with _I.open(f) as im:
+            w, h_ = im.size
+        kb = f.stat().st_size / 1024
+        if (w, h_) != (1200, 630):
+            warns.append(f"og:image fait {w}x{h_}, 1200x630 recommande")
+        if kb > 300:
+            warns.append(f"og:image pese {kb:.0f} Ko, WhatsApp ignore au-dela de 300 Ko")
+        print(f"OK  apercu de partage : {w}x{h_}, {kb:.0f} Ko, URL absolue")
+else:
+    warns.append("pas d'og:image : aucun apercu au partage du lien")
+
 # --- 7. defilement mobile --------------------------------------------
 # overflow-x:hidden sur <body> en fait un conteneur de defilement : combine
 # a des calques position:fixed, le bas de page devient inatteignable sur

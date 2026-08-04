@@ -59,6 +59,7 @@ sont en haut de la section contrastes du script, avec le pire cas simulé
 ```
 index.html              la page finale — fichier GÉNÉRÉ, ne pas éditer à la main
 apple-touch-icon.png    icône iOS (iOS la cherche à la racine du site)
+og-image.jpg            aperçu affiché au partage du lien (1200x630)
 assets/                 images détourées (webp servi, png = qualité max)
                         + icônes de navigateur
 src/
@@ -114,7 +115,25 @@ python src/build.py
 python src/verify.py
 ```
 
-### Deux comportements automatiques
+### Aperçu au partage
+
+`__BASE_URL__` sert uniquement à l'aperçu affiché quand le lien est partagé
+en DM Instagram, sur Discord, WhatsApp… Ce format (`og:image`) **exige une URL
+absolue**, c'est la seule raison pour laquelle l'adresse du site doit être
+écrite en dur.
+
+**À mettre à jour le jour où tu passes sur un nom de domaine**, sinon l'aperçu
+continuera de pointer vers l'ancienne adresse. Si le champ est vide, les
+balises ne sont pas générées du tout — pas d'aperçu cassé.
+
+L'image est `og-image.jpg` à la racine. Pour la changer, remplace le fichier
+en gardant 1200×630 et moins de 300 Ko (au-delà, WhatsApp l'ignore).
+
+> Les réseaux mettent l'aperçu en cache. Après modification, utilise le
+> [debugger Facebook](https://developers.facebook.com/tools/debug/) pour
+> forcer le rafraîchissement.
+
+### Trois comportements automatiques
 
 **Bouton du site.** Tant que `__URL_SITE__` vaut `"#"`, le bouton principal
 passe en mode « Bientôt » : badge gris, icône désaturée, clic bloqué. Ça évite
