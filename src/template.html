@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NEWAVE SPHERE — Liens</title>
+<meta name="description" content="NEWAVE SPHERE — média & marque indépendante. Upcycling, recherche, attention aux détails.">
+<meta name="theme-color" content="#6d4bd6">
+<meta property="og:title" content="NEWAVE SPHERE">
+<meta property="og:description" content="Média & marque indépendante. Tous nos liens au même endroit.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   NEWAVE SPHERE — page de liens
+   Palette & DA reprises des visuels Canva (chrome + violet)
+   ============================================================ */
+
+:root{
+  --violet-deep:#4a2a9e;
+  --violet:#7b52e8;
+  --lavande:#b49bf0;
+  --rose:#e58ad8;
+  --bleu:#8fa8f0;
+  --creme:#f2ecff;
+  --ink:#170a33;
+
+  --pad: clamp(20px, 5.5vw, 34px);
+  --radius: 20px;
+  --maxw: 470px;
+
+  --chrome-edge: linear-gradient(140deg,#ffffff 0%,#c9c9d4 14%,#7e7e91 32%,#f4f4f8 47%,
+                 #9d9daf 62%,#e9e9f1 76%,#6f6f82 89%,#ffffff 100%);
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  min-height:100svh;
+  font-family:'Archivo',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  color:var(--creme);
+  background:#3d1f88;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ---------- fond : dégradé mesh violet / lavande / rose ---------- */
+.bg{
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:
+    radial-gradient(circle at 78% 12%, rgba(233,150,220,.85) 0%, rgba(233,150,220,0) 48%),
+    radial-gradient(circle at 15% 30%, rgba(140,120,245,.9) 0%, rgba(140,120,245,0) 52%),
+    radial-gradient(circle at 50% 52%, rgba(226,182,246,.95) 0%, rgba(226,182,246,0) 55%),
+    radial-gradient(circle at 88% 72%, rgba(150,175,245,.8) 0%, rgba(150,175,245,0) 50%),
+    radial-gradient(circle at 12% 88%, rgba(190,150,240,.85) 0%, rgba(190,150,240,0) 50%),
+    linear-gradient(168deg,#542ba8 0%,#8b5ad8 26%,#c084e0 50%,#8e83e2 74%,#5a35b4 100%);
+  animation:drift 26s ease-in-out infinite alternate;
+}
+@keyframes drift{
+  from{transform:scale(1) translate3d(0,0,0)}
+  to{transform:scale(1.12) translate3d(0,-1.5%,0)}
+}
+
+/* grain léger pour casser les bandes du dégradé */
+.grain{
+  position:fixed; inset:-50%; z-index:1; pointer-events:none;
+  opacity:.16; mix-blend-mode:overlay;
+  background-image:var(--noise);
+  background-size:180px 180px;
+}
+
+/* ---------- blobs chromés ---------- */
+/* le conteneur porte la position + le parallaxe souris,
+   l'image porte la rotation + l'animation de flottement.
+   (deux couches = pas de conflit entre inline style et keyframes) */
+.chrome{
+  position:fixed; z-index:2; pointer-events:none;
+  will-change:transform;
+  transition:translate .5s cubic-bezier(.2,.8,.3,1);
+}
+.chrome img{
+  display:block; width:100%; height:auto;
+  filter:drop-shadow(0 18px 34px rgba(45,15,95,.42));
+}
+
+.c-tl{top:calc(-7vw - 40px); left:calc(-14vw - 46px); width:min(46vw,300px)}
+.c-tr{top:calc(-9vw - 46px); right:calc(-15vw - 56px); width:min(50vw,330px)}
+.c-bl{bottom:calc(-10vw - 50px); left:calc(-16vw - 60px); width:min(52vw,340px)}
+.c-br{bottom:calc(-8vw - 44px); right:calc(-13vw - 48px); width:min(48vw,318px)}
+
+.c-tl img{rotate:-8deg;  animation:float1 15s ease-in-out infinite}
+.c-tr img{rotate:14deg;  scale:-1 1; animation:float2 18s ease-in-out infinite}
+.c-bl img{rotate:160deg; animation:float2 20s ease-in-out infinite reverse}
+.c-br img{rotate:-166deg;animation:float1 17s ease-in-out infinite reverse}
+
+/* accents latéraux, desktop / grand mobile seulement */
+.c-ml,.c-mr{display:none}
+
+@keyframes float1{
+  0%,100%{translate:0 0}
+  50%{translate:0 18px}
+}
+@keyframes float2{
+  0%,100%{translate:0 0}
+  50%{translate:0 -20px}
+}
+
+/* ---------- glyphes décoratifs verticaux (repris des visuels) ---------- */
+.glyphs{
+  position:fixed; top:50%; translate:0 -50%; z-index:2;
+  display:flex; flex-direction:column; gap:clamp(14px,3.4vh,26px);
+  font-size:clamp(13px,3.2vw,17px); font-weight:800; line-height:1;
+  color:rgba(255,255,255,.5);
+  text-shadow:0 1px 2px rgba(80,40,150,.35);
+  pointer-events:none; user-select:none;
+}
+.glyphs.left{left:clamp(6px,2.4vw,20px)}
+.glyphs.right{right:clamp(6px,2.4vw,20px)}
+.glyphs span{display:block}
+
+/* ---------- contenu ---------- */
+.wrap{
+  position:relative; z-index:5;
+  max-width:var(--maxw); margin-inline:auto;
+  padding: clamp(46px,11vh,84px) var(--pad) clamp(36px,7vh,60px);
+  display:flex; flex-direction:column; align-items:center;
+  gap:clamp(20px,4.2vh,30px);
+}
+
+/* scrim sombre derrière le contenu : garantit la lisibilité du blanc
+   même au centre clair du dégradé */
+.wrap::before{
+  content:''; position:absolute; inset:-4% -8% -4% -8%; z-index:-1;
+  background:radial-gradient(ellipse 74% 60% at 50% 46%,
+             rgba(46,18,102,.42) 0%, rgba(46,18,102,.22) 55%, rgba(46,18,102,0) 78%);
+  pointer-events:none;
+}
+
+/* logo */
+.logo{width:min(64%,238px); height:auto; display:block;
+      filter:drop-shadow(0 6px 20px rgba(60,25,120,.5));
+      animation:rise .7s cubic-bezier(.2,.7,.3,1) both}
+.tagline{
+  margin:0; text-align:center;
+  font-size:clamp(11px,2.9vw,13px); font-weight:700;
+  letter-spacing:.24em; text-transform:uppercase;
+  color:rgba(255,255,255,.94);
+  text-shadow:0 1px 10px rgba(70,30,140,.45);
+  animation:rise .7s .07s cubic-bezier(.2,.7,.3,1) both;
+}
+
+/* carte « le projet » */
+.about{
+  width:100%; margin:0;
+  padding:clamp(16px,4.4vw,22px) clamp(17px,4.6vw,24px);
+  border-radius:var(--radius);
+  background:linear-gradient(150deg, rgba(38,14,88,.46), rgba(38,14,88,.28));
+  backdrop-filter:blur(18px) saturate(150%);
+  -webkit-backdrop-filter:blur(18px) saturate(150%);
+  border:1px solid rgba(255,255,255,.34);
+  box-shadow:0 10px 30px rgba(45,15,100,.26), inset 0 1px 0 rgba(255,255,255,.32);
+  animation:rise .7s .14s cubic-bezier(.2,.7,.3,1) both;
+}
+.about h2{
+  margin:0 0 9px; font-size:11px; font-weight:800;
+  letter-spacing:.2em; text-transform:uppercase;
+  color:rgba(255,255,255,.82);
+}
+.about p{
+  margin:0; font-size:clamp(13.5px,3.5vw,15px); line-height:1.62;
+  color:rgba(255,255,255,.95);
+}
+.about b{font-weight:800; color:#fff}
+.about .hl{
+  font-weight:800; color:#fff;
+  background:linear-gradient(180deg,transparent 60%, rgba(197,150,255,.55) 60%);
+  padding:0 2px; border-radius:2px;
+}
+
+/* ---------- boutons de liens ---------- */
+.links{width:100%; display:flex; flex-direction:column; gap:clamp(11px,2.6vh,14px); margin:0; padding:0; list-style:none}
+.links li{animation:rise .7s cubic-bezier(.2,.7,.3,1) both}
+.links li:nth-child(1){animation-delay:.20s}
+.links li:nth-child(2){animation-delay:.26s}
+.links li:nth-child(3){animation-delay:.32s}
+
+.link{
+  position:relative; display:flex; align-items:center; gap:14px;
+  width:100%; padding:15px 16px;
+  border-radius:var(--radius);
+  text-decoration:none; color:var(--ink);
+  background:linear-gradient(160deg,#fff 0%,#f4efff 52%,#e6dcfb 100%);
+  box-shadow:0 8px 22px rgba(52,18,110,.26), inset 0 1px 0 #fff;
+  overflow:hidden; isolation:isolate;
+  transition:transform .28s cubic-bezier(.2,.8,.3,1), box-shadow .28s ease;
+  -webkit-tap-highlight-color:transparent;
+}
+/* liseré chromé */
+.link::before{
+  content:''; position:absolute; inset:0; border-radius:inherit; padding:1.6px;
+  background:var(--chrome-edge); background-size:220% 220%;
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor; mask-composite:exclude;
+  pointer-events:none; z-index:2;
+  transition:background-position .6s ease;
+}
+/* balayage chromé au survol */
+.link::after{
+  content:''; position:absolute; top:0; bottom:0; left:-60%; width:45%;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.9),transparent);
+  transform:skewX(-18deg); opacity:0; z-index:1; pointer-events:none;
+}
+.link:hover{transform:translateY(-3px); box-shadow:0 14px 30px rgba(52,18,110,.34), inset 0 1px 0 #fff}
+.link:hover::before{background-position:100% 100%}
+.link:hover::after{animation:sweep .75s ease forwards}
+.link:active{transform:translateY(-1px) scale(.988)}
+.link:focus-visible{outline:3px solid #fff; outline-offset:3px}
+@keyframes sweep{
+  0%{left:-60%;opacity:0}
+  12%{opacity:1}
+  100%{left:115%;opacity:0}
+}
+
+.ic{
+  flex:0 0 auto; width:44px; height:44px; border-radius:13px;
+  display:grid; place-items:center; color:#fff; position:relative; z-index:3;
+  box-shadow:0 4px 12px rgba(30,10,70,.3), inset 0 1px 0 rgba(255,255,255,.35);
+}
+.ic svg{width:23px;height:23px;display:block}
+.ic-ig{background:linear-gradient(45deg,#f9ce34 0%,#ee2a7b 48%,#6228d7 100%)}
+.ic-tt{background:linear-gradient(140deg,#26313a 0%,#0b0b0f 100%)}
+.ic-web{background:linear-gradient(140deg,#7b52e8 0%,#4a2a9e 100%)}
+
+.txt{flex:1 1 auto; min-width:0; position:relative; z-index:3}
+.txt .t{
+  display:block; font-size:15px; font-weight:800; letter-spacing:-.01em; line-height:1.25;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.txt .s{
+  display:block; margin-top:2px; font-size:11.5px; font-weight:600;
+  letter-spacing:.05em; color:#6a5a92;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.arw{
+  flex:0 0 auto; position:relative; z-index:3;
+  width:28px;height:28px;border-radius:50%;
+  display:grid;place-items:center;
+  background:rgba(23,10,51,.07); color:#3a2470;
+  transition:transform .28s cubic-bezier(.2,.8,.3,1), background .28s ease;
+}
+.arw svg{width:14px;height:14px}
+.link:hover .arw{transform:translateX(4px); background:rgba(23,10,51,.13)}
+
+/* badge « principal » sur le lien du site */
+.link.feature{background:linear-gradient(160deg,#fff 0%,#efe6ff 45%,#dcccfa 100%)}
+.tag{
+  position:absolute; top:0; right:0; z-index:3;
+  font-size:9px; font-weight:900; letter-spacing:.13em; text-transform:uppercase;
+  color:#fff; background:linear-gradient(120deg,#7b52e8,#c05fd8);
+  padding:4px 11px 5px; border-radius:0 var(--radius) 0 12px;
+  box-shadow:0 2px 8px rgba(60,20,130,.3);
+}
+
+/* ---------- contact / newsletter ---------- */
+.contact{
+  width:100%; padding:clamp(17px,4.4vw,22px) clamp(17px,4.6vw,24px);
+  border-radius:var(--radius);
+  background:linear-gradient(150deg, rgba(30,12,70,.42), rgba(30,12,70,.24));
+  backdrop-filter:blur(16px) saturate(150%);
+  -webkit-backdrop-filter:blur(16px) saturate(150%);
+  border:1px solid rgba(255,255,255,.3);
+  box-shadow:0 10px 30px rgba(45,15,100,.26), inset 0 1px 0 rgba(255,255,255,.3);
+  animation:rise .7s .38s cubic-bezier(.2,.7,.3,1) both;
+}
+.contact h2{
+  margin:0 0 4px; font-size:15px; font-weight:800; letter-spacing:-.01em; color:#fff;
+}
+.contact p{margin:0 0 13px; font-size:12.5px; line-height:1.5; color:rgba(255,255,255,.8)}
+
+.field{display:flex; gap:8px}
+.field input{
+  flex:1 1 auto; min-width:0;
+  padding:13px 15px; font:inherit; font-size:14px; font-weight:600;
+  color:var(--ink); background:rgba(255,255,255,.94);
+  border:1px solid rgba(255,255,255,.6); border-radius:13px;
+  transition:box-shadow .2s ease;
+}
+.field input::placeholder{color:#8a7bab; font-weight:500}
+.field input:focus{outline:none; box-shadow:0 0 0 3px rgba(255,255,255,.55)}
+.field button{
+  flex:0 0 auto; padding:13px 20px; font:inherit; font-size:13.5px; font-weight:800;
+  letter-spacing:.02em; color:var(--ink); cursor:pointer;
+  border:1px solid rgba(255,255,255,.85); border-radius:13px;
+  background:linear-gradient(150deg,#fff,#ddd0fa);
+  box-shadow:0 4px 14px rgba(35,12,85,.3), inset 0 1px 0 #fff;
+  transition:transform .2s ease, box-shadow .2s ease;
+  -webkit-tap-highlight-color:transparent;
+}
+.field button:hover{transform:translateY(-2px); box-shadow:0 8px 20px rgba(35,12,85,.38), inset 0 1px 0 #fff}
+.field button:active{transform:translateY(0)}
+.note{margin:10px 0 0; font-size:11.5px; color:rgba(255,255,255,.78)}
+.note a{color:#fff; text-decoration:underline; text-underline-offset:2px}
+.ok{
+  margin:11px 0 0; font-size:12.5px; font-weight:700; color:#fff;
+  display:none; align-items:center; gap:7px;
+}
+.ok.show{display:flex; animation:rise .4s ease both}
+
+/* ---------- pied de page ---------- */
+footer{
+  position:relative; z-index:5; text-align:center;
+  padding:0 var(--pad) calc(26px + env(safe-area-inset-bottom));
+  animation:rise .7s .44s cubic-bezier(.2,.7,.3,1) both;
+}
+footer img{width:82px; height:auto; opacity:.68; margin-bottom:9px}
+footer p{
+  margin:0; font-size:10px; font-weight:700; letter-spacing:.22em; text-transform:uppercase;
+  color:rgba(255,255,255,.8); text-shadow:0 1px 8px rgba(40,12,95,.55);
+}
+
+@keyframes rise{
+  from{opacity:0; transform:translateY(16px)}
+  to{opacity:1; transform:none}
+}
+
+/* ---------- responsive ---------- */
+@media (min-width:560px){
+  .glyphs{gap:26px}
+  .c-ml,.c-mr{display:block; position:fixed; z-index:2; width:min(22vw,240px);
+              pointer-events:none;
+              filter:drop-shadow(0 18px 34px rgba(45,15,95,.4));
+              transition:translate .5s cubic-bezier(.2,.8,.3,1)}
+  .c-ml{top:44%; left:-9vw; rotate:72deg}
+  .c-mr{top:38%; right:-8vw; rotate:-104deg; scale:-1 1}
+  .c-tl{width:min(30vw,340px); left:-5vw; top:-5vw}
+  .c-tr{width:min(32vw,370px); right:-5vw; top:-6vw}
+  .c-bl{width:min(32vw,375px); left:-6vw; bottom:-6vw}
+  .c-br{width:min(30vw,350px); right:-5vw; bottom:-5vw}
+}
+@media (max-width:359px){
+  .ic{width:40px;height:40px;border-radius:11px}
+  .ic svg{width:21px;height:21px}
+  .txt .t{font-size:14px}
+  .field{flex-direction:column}
+  .field button{width:100%}
+  .glyphs{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important; transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<div class="bg"></div>
+<div class="grain"></div>
+
+<!-- blobs chromés -->
+<div class="chrome c-tl"><img src="__C2__" alt="" aria-hidden="true"></div>
+<div class="chrome c-tr"><img src="__C3__" alt="" aria-hidden="true"></div>
+<div class="chrome c-bl"><img src="__C1__" alt="" aria-hidden="true"></div>
+<div class="chrome c-br"><img src="__C2__" alt="" aria-hidden="true"></div>
+<img class="c-ml" src="__C3__" alt="" aria-hidden="true">
+<img class="c-mr" src="__C1__" alt="" aria-hidden="true">
+
+<!-- glyphes latéraux -->
+<div class="glyphs left" aria-hidden="true">
+  <span>-</span><span>+</span><span>~</span><span>-</span><span>+</span><span>~</span><span>+</span>
+</div>
+<div class="glyphs right" aria-hidden="true">
+  <span>+</span><span>~</span><span>-</span><span>+</span><span>~</span><span>+</span><span>~</span>
+</div>
+
+<main class="wrap">
+
+  <img class="logo" src="__LOGO__" alt="NEWAVE SPHERE">
+
+  <p class="tagline">Média &amp; marque indépendante</p>
+
+  <section class="about">
+    <h2>Le projet</h2>
+    <p>Chaque pièce est le fruit d'un <span class="hl">processus de création engagé</span>, mêlant
+    upcycling, recherche et attention aux détails. Ici, vous ne trouverez qu'un
+    <b>unique exemplaire</b> de chaque article.</p>
+  </section>
+
+  <ul class="links">
+    <li>
+      <a class="link feature" href="__URL_SITE__" target="_blank" rel="noopener">
+        <span class="tag">Le projet</span>
+        <span class="ic ic-web" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18"/>
+          </svg>
+        </span>
+        <span class="txt">
+          <span class="t">Le site NEWAVE SPHERE</span>
+          <span class="s">Boutique, articles &amp; univers</span>
+        </span>
+        <span class="arw" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 5l7 7-7 7"/></svg>
+        </span>
+      </a>
+    </li>
+    <li>
+      <a class="link" href="__URL_IG__" target="_blank" rel="noopener">
+        <span class="ic ic-ig" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2.5" y="2.5" width="19" height="19" rx="5.4"/>
+            <circle cx="12" cy="12" r="4.2"/>
+            <circle cx="17.6" cy="6.4" r="1.25" fill="currentColor" stroke="none"/>
+          </svg>
+        </span>
+        <span class="txt">
+          <span class="t">Instagram</span>
+          <span class="s">__IG_HANDLE__</span>
+        </span>
+        <span class="arw" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 5l7 7-7 7"/></svg>
+        </span>
+      </a>
+    </li>
+    <li>
+      <a class="link" href="__URL_TT__" target="_blank" rel="noopener">
+        <span class="ic ic-tt" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M16.6 5.82A4.28 4.28 0 0 1 15.54 3h-3.09v12.4a2.59 2.59 0 1 1-1.79-2.46V9.77a5.95 5.95 0 1 0 4.88 5.85V9.01a7.34 7.34 0 0 0 4.25 1.36V7.28a4.28 4.28 0 0 1-3.19-1.46z"/>
+          </svg>
+        </span>
+        <span class="txt">
+          <span class="t">TikTok</span>
+          <span class="s">__TT_HANDLE__</span>
+        </span>
+        <span class="arw" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 5l7 7-7 7"/></svg>
+        </span>
+      </a>
+    </li>
+  </ul>
+
+  <section class="contact">
+    <h2>Rejoins la communauté</h2>
+    <p>Drops, pop-up stores et coulisses du projet — avant tout le monde.</p>
+    <form class="field" id="nl" novalidate>
+      <input type="email" name="email" placeholder="ton@email.com" autocomplete="email" required aria-label="Adresse email">
+      <button type="submit">Je m'inscris</button>
+    </form>
+    <p class="ok" id="ok">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5.5 5.5L20 6.5"/></svg>
+      C'est noté, à très vite.
+    </p>
+    <p class="note">Une collab, une question ? <a href="mailto:__EMAIL__">__EMAIL__</a></p>
+  </section>
+
+</main>
+
+<footer>
+  <img src="__MARK__" alt="" aria-hidden="true">
+  <p>© <span id="y">2026</span> NEWAVE SPHERE</p>
+</footer>
+
+<script>
+document.getElementById('y').textContent = new Date().getFullYear();
+
+/* Newsletter — remplace l'action ci-dessous par ton endpoint
+   (Mailchimp, Brevo, Formspree, Beehiiv...) quand tu en auras un. */
+var NEWSLETTER_ENDPOINT = ""; // ex: "https://formspree.io/f/xxxxxx"
+
+document.getElementById('nl').addEventListener('submit', function(e){
+  e.preventDefault();
+  var input = this.querySelector('input');
+  if(!input.checkValidity()){ input.focus(); input.reportValidity(); return; }
+
+  if(NEWSLETTER_ENDPOINT){
+    fetch(NEWSLETTER_ENDPOINT,{
+      method:'POST',
+      headers:{'Accept':'application/json'},
+      body:new FormData(this)
+    }).catch(function(){});
+  }
+  this.style.display='none';
+  document.getElementById('ok').classList.add('show');
+});
+
+/* léger parallaxe des blobs (desktop uniquement) */
+if(window.matchMedia('(min-width:900px)').matches &&
+   window.matchMedia('(prefers-reduced-motion: no-preference)').matches){
+  var blobs = document.querySelectorAll('.chrome, .c-ml, .c-mr');
+  window.addEventListener('mousemove', function(e){
+    var x = (e.clientX / window.innerWidth  - .5);
+    var y = (e.clientY / window.innerHeight - .5);
+    blobs.forEach(function(b, i){
+      var d = (i % 2 ? -1 : 1) * (9 + i * 3);
+      b.style.translate = (x*d).toFixed(1) + 'px ' + (y*d).toFixed(1) + 'px';
+    });
+  }, {passive:true});
+}
+</script>
+</body>
+</html>
