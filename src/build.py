@@ -35,7 +35,7 @@ LINKS = {
     # L'image d'apercu (partage en DM, Discord, WhatsApp...) exige une URL
     # absolue : c'est la seule raison d'etre de ce reglage. A mettre a jour
     # le jour ou tu passes sur un nom de domaine.
-    "__BASE_URL__": "https://styl1st.github.io/newave-linktree",
+    "__BASE_URL__": "https://newavesphere.fr",
 }
 # =====================================================================
 
