@@ -6,6 +6,8 @@ Construit index.html : injecte les assets en base64 + les liens dans le template
 C'est LE seul fichier a editer pour changer les liens de la page.
 """
 import base64
+import hashlib
+import sys
 import urllib.parse
 from pathlib import Path
 
@@ -89,7 +91,38 @@ def main() -> None:
         raise SystemExit(f"Tokens non remplaces : {leftover}")
 
     out = ROOT / "index.html"
+    stamp = SRC / ".last-build"
+
+    # Garde-fou : index.html est un fichier genere. Si quelqu'un l'a edite a
+    # la main depuis le dernier build, on refuse d'ecraser son travail en
+    # silence -- il faut d'abord reporter la modif dans template.html.
+    if out.exists() and stamp.exists():
+        actuel = hashlib.sha256(out.read_bytes()).hexdigest()
+        if actuel != stamp.read_text().strip() and "--force" not in sys.argv:
+            print(
+                "\nARRET : index.html a ete modifie a la main depuis le dernier build.\n"
+                "\n  index.html est un fichier GENERE. Toute modification directe"
+                "\n  sera perdue au prochain build."
+                "\n"
+                "\n  Pour garder ta modification : reporte-la dans src/template.html,"
+                "\n  puis relance build.py."
+                "\n"
+                "\n  Pour l'abandonner et regenerer quand meme :"
+                "\n      python src/build.py --force\n"
+            )
+            raise SystemExit(1)
+
+    # banniere en tete du fichier genere
+    html = html.replace(
+        "<!DOCTYPE html>",
+        "<!DOCTYPE html>\n<!-- FICHIER GENERE PAR src/build.py "
+        "- NE PAS EDITER A LA MAIN.\n     Modifie src/template.html "
+        "puis relance : python src/build.py -->",
+        1,
+    )
+
     out.write_text(html, encoding="utf-8")
+    stamp.write_text(hashlib.sha256(out.read_bytes()).hexdigest())
     print(f"index.html genere -- {out.stat().st_size / 1024:.0f} Ko (autonome)")
     if coming_soon:
         print("   note : bouton du site en mode 'Bientôt' "

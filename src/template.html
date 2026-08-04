@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>NEWAVE SPHERE — Liens</title>
 <meta name="description" content="NEWAVE SPHERE — média & marque indépendante. Upcycling, recherche, attention aux détails.">
-<meta name="theme-color" content="#6d4bd6">
+<meta name="theme-color" content="#33217f">
 <meta property="og:title" content="NEWAVE SPHERE">
 <meta property="og:description" content="Média & marque indépendante. Tous nos liens au même endroit.">
 <meta property="og:type" content="website">
@@ -36,22 +36,34 @@
 }
 
 *,*::before,*::after{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
+html{
+  -webkit-text-size-adjust:100%;
+  /* clip et non hidden : clip masque le debordement SANS creer de
+     conteneur de defilement. hidden sur body rendait le bas de page
+     inatteignable sur iOS Safari. */
+  overflow-x:clip;
+}
 body{
   margin:0;
   min-height:100svh;
+  display:flex; flex-direction:column;   /* pied de page toujours en bas */
   font-family:'Archivo',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
   color:var(--creme);
-  background:#3d1f88;
-  overflow-x:hidden;
+  background:#33217f;
   -webkit-font-smoothing:antialiased;
 }
 
 /* ---------- fond : dégradé mesh violet / lavande / rose ---------- */
 .bg{
   position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden;
-  background:linear-gradient(168deg,#542ba8 0%,#8b5ad8 26%,#c084e0 50%,
-                             #8e83e2 74%,#5a35b4 100%);
+  background:linear-gradient(168deg,
+    #33217f 0%,    /* sombre : la tagline est posee ici */
+    #4e5bc0 24%,   /* bleu bleuet, la teinte dominante de tes visuels */
+    #9e63d6 46%,   /* violet */
+    #c255c4 64%,   /* magenta, le pic de couleur */
+    #5a54c8 84%,   /* retour au bleu */
+    #31217c 100%   /* sombre : le pied de page est pose ici */
+  );
 }
 /* deux nappes de couleur qui derivent en sens contraire :
    c'est ce qui donne la sensation de mouvement liquide */
@@ -61,25 +73,25 @@ body{
 }
 .bg::before{
   background:
-    radial-gradient(circle at 32% 28%, rgba(233,150,220,.75) 0%, transparent 46%),
-    radial-gradient(circle at 72% 62%, rgba(140,120,245,.72) 0%, transparent 46%),
-    radial-gradient(circle at 50% 92%, rgba(190,150,240,.65) 0%, transparent 44%);
-  animation:nappe1 34s ease-in-out infinite alternate;
+    radial-gradient(circle at 30% 26%, rgba(232,111,216,.72) 0%, transparent 44%),
+    radial-gradient(circle at 74% 60%, rgba(90,114,224,.78) 0%, transparent 44%),
+    radial-gradient(circle at 48% 94%, rgba(180,122,234,.68) 0%, transparent 42%);
+  animation:nappe1 28s ease-in-out infinite alternate;
 }
 .bg::after{
   background:
-    radial-gradient(circle at 68% 22%, rgba(150,175,245,.62) 0%, transparent 44%),
-    radial-gradient(circle at 22% 72%, rgba(226,182,246,.7) 0%, transparent 46%),
-    radial-gradient(circle at 88% 84%, rgba(197,140,235,.6) 0%, transparent 42%);
-  animation:nappe2 47s ease-in-out infinite alternate;
+    radial-gradient(circle at 70% 20%, rgba(126,143,234,.74) 0%, transparent 42%),
+    radial-gradient(circle at 20% 70%, rgba(212,96,206,.66) 0%, transparent 44%),
+    radial-gradient(circle at 86% 86%, rgba(158,99,214,.7) 0%, transparent 42%);
+  animation:nappe2 39s ease-in-out infinite alternate;
 }
 @keyframes nappe1{
-  from{transform:translate3d(-5%,-4%,0) scale(1)     rotate(0deg)}
-  to  {transform:translate3d(6%,5%,0)   scale(1.18)  rotate(8deg)}
+  from{transform:translate3d(-9%,-7%,0) scale(1)     rotate(0deg)}
+  to  {transform:translate3d(11%,9%,0)  scale(1.30)  rotate(14deg)}
 }
 @keyframes nappe2{
-  from{transform:translate3d(5%,4%,0)   scale(1.14)  rotate(0deg)}
-  to  {transform:translate3d(-6%,-5%,0) scale(1)     rotate(-9deg)}
+  from{transform:translate3d(9%,7%,0)   scale(1.24)  rotate(0deg)}
+  to  {transform:translate3d(-11%,-9%,0) scale(1)    rotate(-16deg)}
 }
 
 /* Voile sombre plein écran : assombrit le centre pour que le texte blanc
@@ -88,11 +100,20 @@ body{
    arête ne peut apparaître, contrairement à un voile calé sur le contenu. */
 .scrim{
   position:fixed; inset:0; z-index:4; pointer-events:none;
-  background:radial-gradient(ellipse 68% 58% at 50% 48%,
-             rgba(44,16,100,.40) 0%,
-             rgba(44,16,100,.26) 45%,
-             rgba(44,16,100,.10) 75%,
-             rgba(44,16,100,0)   100%);
+  background:
+    /* bandes haut et bas : garantissent une zone sombre sous la tagline et
+       sous le pied de page, quelle que soit la derive des nappes */
+    linear-gradient(180deg,
+      rgba(44,16,100,.50) 0%,
+      rgba(44,16,100,0)   30%,
+      rgba(44,16,100,0)   70%,
+      rgba(44,16,100,.58) 100%),
+    /* assombrissement central, transparent aux bords : aucune arete */
+    radial-gradient(ellipse 68% 58% at 50% 48%,
+      rgba(44,16,100,.36) 0%,
+      rgba(44,16,100,.24) 45%,
+      rgba(44,16,100,.09) 75%,
+      rgba(44,16,100,0)   100%);
 }
 
 /* grain léger pour casser les bandes du dégradé */
@@ -141,7 +162,7 @@ body{
 
 /* ---------- glyphes décoratifs verticaux (repris des visuels) ---------- */
 .glyphs{
-  --gh: clamp(30px,5.2vh,46px);   /* pas vertical entre deux glyphes */
+  --gh: clamp(30px,5.2svh,46px);   /* pas vertical entre deux glyphes */
   position:fixed; top:0; bottom:0; z-index:1;   /* z-index 1 = sous le chrome */
   overflow:hidden;
   font-size:clamp(13px,3.2vw,17px); font-weight:800;
@@ -174,9 +195,10 @@ body{
 .wrap{
   position:relative; z-index:5;
   max-width:var(--maxw); margin-inline:auto;
-  padding: clamp(46px,11vh,84px) var(--pad) clamp(36px,7vh,60px);
+  width:100%; flex:1 0 auto;
+  padding: clamp(34px,7svh,78px) var(--pad) clamp(26px,4svh,50px);
   display:flex; flex-direction:column; align-items:center;
-  gap:clamp(20px,4.2vh,30px);
+  gap:clamp(17px,3.2svh,28px);
 }
 
 /* logo */
@@ -185,7 +207,7 @@ body{
       animation:rise .7s cubic-bezier(.2,.7,.3,1) both}
 .tagline{
   margin:0; text-align:center;
-  font-size:clamp(11px,2.9vw,13px); font-weight:700;
+  font-size:clamp(11px,2.9vw,13px); font-weight:700; line-height:1.9;
   letter-spacing:.24em; text-transform:uppercase;
   color:#fff;
   text-shadow:0 1px 3px rgba(40,12,92,.55), 0 2px 18px rgba(40,12,92,.5);
@@ -204,13 +226,15 @@ body{
   box-shadow:0 10px 30px rgba(45,15,100,.26), inset 0 1px 0 rgba(255,255,255,.32);
   animation:rise .7s .14s cubic-bezier(.2,.7,.3,1) both;
 }
-.about h2{
-  margin:0 0 9px; font-size:11px; font-weight:800;
-  letter-spacing:.2em; text-transform:uppercase;
-  color:rgba(255,255,255,.82);
+/* titres des cartes : meme traitement pour les deux */
+.about h2,.contact h2{
+  margin:0 0 10px; text-align:center;
+  font-size:clamp(15.5px,4.2vw,17.5px); font-weight:800;
+  letter-spacing:-.005em; line-height:1.3;
+  color:#fff;
 }
 .about p{
-  margin:0; font-size:clamp(13.5px,3.5vw,15px); line-height:1.62;
+  margin:0; font-size:clamp(14.5px,3.9vw,16px); line-height:1.6;
   color:rgba(255,255,255,.95);
 }
 .about b{font-weight:800; color:#fff}
@@ -221,7 +245,7 @@ body{
 }
 
 /* ---------- boutons de liens ---------- */
-.links{width:100%; display:flex; flex-direction:column; gap:clamp(11px,2.6vh,14px); margin:0; padding:0; list-style:none}
+.links{width:100%; display:flex; flex-direction:column; gap:clamp(10px,2.2svh,14px); margin:0; padding:0; list-style:none}
 .links li{animation:rise .7s cubic-bezier(.2,.7,.3,1) both}
 .links li:nth-child(1){animation-delay:.20s}
 .links li:nth-child(2){animation-delay:.26s}
@@ -327,10 +351,11 @@ body{
   box-shadow:0 10px 30px rgba(45,15,100,.26), inset 0 1px 0 rgba(255,255,255,.3);
   animation:rise .7s .38s cubic-bezier(.2,.7,.3,1) both;
 }
-.contact h2{
-  margin:0 0 4px; font-size:15px; font-weight:800; letter-spacing:-.01em; color:#fff;
+.contact p{
+  margin:0 0 14px; text-align:center;
+  font-size:clamp(13.5px,3.6vw,14.5px); line-height:1.55;
+  color:rgba(255,255,255,.84);
 }
-.contact p{margin:0 0 13px; font-size:12.5px; line-height:1.5; color:rgba(255,255,255,.8)}
 
 .field{display:flex; gap:8px}
 .field input{
@@ -353,11 +378,16 @@ body{
 }
 .field button:hover{transform:translateY(-2px); box-shadow:0 8px 20px rgba(35,12,85,.38), inset 0 1px 0 #fff}
 .field button:active{transform:translateY(0)}
-.note{margin:10px 0 0; font-size:11.5px; color:rgba(255,255,255,.78)}
+.note{
+  margin:11px 0 0; text-align:center;
+  font-size:clamp(12px,3.2vw,13px); line-height:1.5;
+  color:rgba(255,255,255,.8);
+}
 .field.is-off{display:none}
 .fallback{
-  display:none; margin:0; font-size:12.5px; line-height:1.5;
-  color:rgba(255,255,255,.88);
+  display:none; margin:0; text-align:center;
+  font-size:clamp(13.5px,3.6vw,14.5px); line-height:1.55;
+  color:rgba(255,255,255,.9);
 }
 .fallback.show{display:block}
 .fallback a{color:#fff; font-weight:700; text-decoration:underline; text-underline-offset:2px}
@@ -366,12 +396,12 @@ body{
   margin:11px 0 0; font-size:12.5px; font-weight:700; color:#fff;
   display:none; align-items:center; gap:7px;
 }
-.ok.show{display:flex; animation:rise .4s ease both}
+.ok.show{display:flex; justify-content:center; animation:rise .4s ease both}
 
 /* ---------- pied de page ---------- */
 footer{
-  position:relative; z-index:5; text-align:center;
-  padding:0 var(--pad) calc(26px + env(safe-area-inset-bottom));
+  position:relative; z-index:5; flex:0 0 auto; text-align:center;
+  padding:0 var(--pad) calc(34px + env(safe-area-inset-bottom));
   animation:rise .7s .44s cubic-bezier(.2,.7,.3,1) both;
 }
 footer img{width:82px; height:auto; opacity:.68; margin-bottom:9px}
@@ -400,6 +430,52 @@ footer p{
   .c-bl{width:min(32vw,375px); left:-6vw; bottom:-6vw}
   .c-br{width:min(30vw,350px); right:-5vw; bottom:-5vw}
 }
+/* ---------- tablette ----------
+   Les tailles en vw plafonnent des ~430px de large : sans ce palier,
+   un iPad affiche exactement le meme corps de texte qu'un telephone,
+   dans une colonne perdue au milieu de l'ecran. On elargit ET on grossit. */
+@media (min-width:700px){
+  :root{--maxw:570px; --radius:22px}
+
+  .logo{width:min(60%,276px)}
+  .tagline{font-size:15px; letter-spacing:.26em}
+
+  .about,.contact{padding:24px 28px}
+  .about h2,.contact h2{font-size:20px; margin-bottom:12px}
+  .about p{font-size:17.5px; line-height:1.62}
+  .contact p{font-size:16px; margin-bottom:16px}
+  .note{font-size:14px}
+  .fallback{font-size:16px}
+
+  .link{padding:18px 19px; gap:16px}
+  .ic{width:50px; height:50px; border-radius:15px}
+  .ic svg{width:26px; height:26px}
+  .txt .t{font-size:17.5px}
+  .txt .s{font-size:13.5px; margin-top:3px}
+  .arw{width:32px; height:32px}
+  .arw svg{width:16px; height:16px}
+  .tag{font-size:10px; padding:5px 13px 6px}
+
+  .field{gap:10px}
+  .field input,.field button{font-size:16px; padding:15px 18px; border-radius:15px}
+
+  footer img{width:96px}
+  footer p{font-size:11.5px}
+
+  .glyphs{--gh:clamp(38px,5.6svh,54px); font-size:19px}
+}
+
+/* ---------- grand ecran ---------- */
+@media (min-width:1100px){
+  :root{--maxw:610px}
+  .logo{width:min(58%,296px)}
+  .tagline{font-size:15.5px}
+  .about h2,.contact h2{font-size:21px}
+  .about p{font-size:18px}
+  .txt .t{font-size:18px}
+  .glyphs{font-size:20px}
+}
+
 @media (max-width:359px){
   .ic{width:40px;height:40px;border-radius:11px}
   .ic svg{width:21px;height:21px}
@@ -408,6 +484,17 @@ footer p{
   .field button{width:100%}
   .glyphs{display:none}
 }
+/* telephone en paysage / petits ecrans en hauteur */
+@media (max-height:560px){
+  .wrap{padding-top:26px; padding-bottom:20px; gap:14px}
+  .logo{width:min(42%,170px)}
+  .tagline{letter-spacing:.18em}
+  .about{padding:13px 16px}
+  .about h2,.contact h2{font-size:14.5px; margin-bottom:7px}
+  .about p{font-size:13.5px; line-height:1.5}
+  footer img{width:62px; margin-bottom:6px}
+}
+
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important; transition:none!important}
 }
@@ -439,7 +526,7 @@ footer p{
 
   <img class="logo" src="__LOGO__" alt="NEWAVE SPHERE">
 
-  <p class="tagline">Média &amp; marque indépendante</p>
+  <p class="tagline">Média de marques <br> &amp;<br> d'artistes indépendants</p>
 
   <section class="about">
     <h2>Le projet</h2>
@@ -505,13 +592,13 @@ footer p{
 
   <section class="contact">
     <h2>Rejoins la communauté</h2>
-    <p>Drops, pop-up stores et coulisses du projet — avant tout le monde.</p>
+    <p>Drops, pop-up stores et coulisses du projet avant tout le monde.</p>
     <form class="field__NL_STATE__" id="nl" action="__NL_ENDPOINT__" method="POST" novalidate>
       <input type="email" name="email" placeholder="ton@email.com" autocomplete="email" required aria-label="Adresse email">
       <button type="submit">Je m'inscris</button>
     </form>
     <p class="fallback__FB_STATE__" id="fallback">
-      Inscriptions bientôt ouvertes — en attendant, écris-moi à
+      Inscriptions bientôt ouvertes. En attendant, écris-moi à
       <a href="mailto:__EMAIL__">__EMAIL__</a> et je t'ajoute à la liste.
     </p>
     <p class="ok" id="ok">

@@ -16,3 +16,4 @@ desktop.ini
 
 # NOTE : index.html est genere par src/build.py mais il est VERSIONNE
 # volontairement -- c'est le fichier deploye par GitHub Pages.
+src/.last-build

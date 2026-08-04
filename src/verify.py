@@ -20,6 +20,13 @@ html = PAGE.read_text(encoding="utf-8")
 fails: list[str] = []
 warns: list[str] = []
 
+# Les images sont embarquees en base64 : chercher un motif CSS dans tout le
+# fichier produit de faux positifs. On isole le bloc <style>.
+_s = html.find("<style>")
+css = html[_s:html.find("</style>", _s)] if _s != -1 else ""
+if not css:
+    fails.append("bloc <style> introuvable")
+
 VOID = {"img", "br", "hr", "meta", "link", "input", "source", "path", "circle", "rect"}
 
 
@@ -108,11 +115,17 @@ def over(fg, bg, alpha):
     return tuple(alpha * f + (1 - alpha) * b for f, b in zip(fg, bg))
 
 
-GRAD_LIGHT = (192, 132, 224)  # point le plus clair du degrade = pire cas
-GRAD_DARK = (90, 53, 180)  # bas du degrade, sous le footer
-SCRIM = over((44, 16, 100), GRAD_LIGHT, 0.40)  # voile plein ecran, au centre
-CARD_ABOUT = over((38, 14, 88), SCRIM, 0.46)
-CARD_CONTACT = over((30, 12, 70), SCRIM, 0.24)
+# Pires cas du fond COMPOSE : degrade de base + la nappe mobile la plus
+# claire pouvant deriver a cet endroit, puis le voile. Valeurs issues de la
+# simulation de la palette (cf. section "Fond" du README).
+VEIL = (44, 16, 100)
+
+BG_CENTRE = over(VEIL, (221, 104, 210), 0.36)  # zone des cartes, voile radial
+BG_HAUT = over(VEIL, (187, 101, 205), 0.37)    # tagline : radial + bande haute
+BG_BAS = over(VEIL, (184, 94, 197), 0.51)      # pied de page : bande basse
+
+CARD_ABOUT = over((38, 14, 88), BG_CENTRE, 0.46)
+CARD_CONTACT = over((30, 12, 70), BG_CENTRE, 0.24)
 BUTTON = (244, 239, 255)
 
 TESTS = [
@@ -120,8 +133,8 @@ TESTS = [
     ("titre .about h2", over((255, 255, 255), CARD_ABOUT, 0.82), CARD_ABOUT, 3.0),
     ("texte .contact", over((255, 255, 255), CARD_CONTACT, 0.80), CARD_CONTACT, 4.5),
     ("note .contact", over((255, 255, 255), CARD_CONTACT, 0.78), CARD_CONTACT, 4.5),
-    ("tagline", over((255, 255, 255), SCRIM, 1.0), SCRIM, 4.5),
-    ("footer", over((255, 255, 255), GRAD_DARK, 0.86), GRAD_DARK, 4.5),
+    ("tagline", over((255, 255, 255), BG_HAUT, 1.0), BG_HAUT, 4.5),
+    ("footer", over((255, 255, 255), BG_BAS, 0.86), BG_BAS, 4.5),
     ("titre bouton", (23, 10, 51), BUTTON, 4.5),
     ("sous-titre bouton", (106, 90, 146), BUTTON, 4.5),
 ]
@@ -136,13 +149,15 @@ for name, fg, bg, minimum in TESTS:
 # --- 6. voiles decoratifs : aucun bord visible ------------------------
 # Un degrade qui ne finit pas a alpha 0 laisse une arete nette la ou sa
 # boite s'arrete. C'est exactement le bug des barres verticales.
-scrim_css = re.search(r"\.scrim\{[^}]*\}", html)
+scrim_css = re.search(r"\.scrim\{[^}]*\}", css)
 if not scrim_css:
     fails.append("voile .scrim introuvable")
 else:
-    stops = re.findall(r"rgba\([^)]*?,\s*([\d.]+)\)\s*([\d.]+)%", scrim_css.group(0))
+    radial = re.search(r"radial-gradient\((?:[^()]|\([^)]*\))*\)", scrim_css.group(0))
+    stops = (re.findall(r"rgba\([^)]*?,\s*([\d.]+)\)\s*([\d.]+)%", radial.group(0))
+             if radial else [])
     if not stops:
-        fails.append("voile .scrim : impossible de lire les paliers")
+        fails.append("voile .scrim : radial-gradient introuvable ou illisible")
     else:
         last_alpha, last_pos = stops[-1]
         if float(last_alpha) != 0 or float(last_pos) != 100:
@@ -151,9 +166,32 @@ else:
                 "-- doit etre alpha 0 a 100% sinon son bord se voit"
             )
         else:
-            print("OK  voile .scrim transparent a 100% : aucun bord visible")
+            print("OK  voile .scrim : radial transparent a 100%, aucun bord lateral")
 
-# --- 7. poids ---------------------------------------------------------
+# --- 7. defilement mobile --------------------------------------------
+# overflow-x:hidden sur <body> en fait un conteneur de defilement : combine
+# a des calques position:fixed, le bas de page devient inatteignable sur
+# iOS Safari. C'est un piege classique, on verrouille.
+body_css = re.search(r"body\{[^}]*\}", css)
+if body_css and re.search(r"overflow(-x)?:\s*hidden", body_css.group(0)):
+    fails.append(
+        "body a overflow-x:hidden -> casse le defilement sur iOS Safari. "
+        "Utiliser overflow-x:clip sur html a la place."
+    )
+else:
+    print("OK  pas d'overflow-x:hidden sur body (defilement mobile preserve)")
+
+if not re.search(r"html\{[^}]*overflow-x:\s*clip", css):
+    warns.append("html sans overflow-x:clip : un futur element absolu pourrait deborder")
+
+# vh vaut la hauteur SANS barre de navigateur -> marges gonflees sur mobile
+stray_vh = re.findall(r"\d+(?:\.\d+)?vh\b", css)
+if stray_vh:
+    warns.append(f"unites vh restantes ({len(stray_vh)}) : preferer svh sur mobile")
+else:
+    print("OK  aucune unite vh : espacements previsibles sur mobile")
+
+# --- 8. poids ---------------------------------------------------------
 kb = PAGE.stat().st_size / 1024
 print(f"\nPoids : {kb:.0f} Ko (page autonome, zero fichier externe)")
 if kb > 700:
