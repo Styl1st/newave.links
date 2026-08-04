@@ -110,7 +110,7 @@ def over(fg, bg, alpha):
 
 GRAD_LIGHT = (192, 132, 224)  # point le plus clair du degrade = pire cas
 GRAD_DARK = (90, 53, 180)  # bas du degrade, sous le footer
-SCRIM = over((46, 18, 102), GRAD_LIGHT, 0.42)
+SCRIM = over((44, 16, 100), GRAD_LIGHT, 0.40)  # voile plein ecran, au centre
 CARD_ABOUT = over((38, 14, 88), SCRIM, 0.46)
 CARD_CONTACT = over((30, 12, 70), SCRIM, 0.24)
 BUTTON = (244, 239, 255)
@@ -120,8 +120,8 @@ TESTS = [
     ("titre .about h2", over((255, 255, 255), CARD_ABOUT, 0.82), CARD_ABOUT, 3.0),
     ("texte .contact", over((255, 255, 255), CARD_CONTACT, 0.80), CARD_CONTACT, 4.5),
     ("note .contact", over((255, 255, 255), CARD_CONTACT, 0.78), CARD_CONTACT, 4.5),
-    ("tagline", over((255, 255, 255), SCRIM, 0.94), SCRIM, 4.5),
-    ("footer", over((255, 255, 255), GRAD_DARK, 0.80), GRAD_DARK, 4.5),
+    ("tagline", over((255, 255, 255), SCRIM, 1.0), SCRIM, 4.5),
+    ("footer", over((255, 255, 255), GRAD_DARK, 0.86), GRAD_DARK, 4.5),
     ("titre bouton", (23, 10, 51), BUTTON, 4.5),
     ("sous-titre bouton", (106, 90, 146), BUTTON, 4.5),
 ]
@@ -133,7 +133,27 @@ for name, fg, bg, minimum in TESTS:
     if r < minimum:
         fails.append(f"contraste {name} : {r:.2f}:1 < {minimum}")
 
-# --- 6. poids ---------------------------------------------------------
+# --- 6. voiles decoratifs : aucun bord visible ------------------------
+# Un degrade qui ne finit pas a alpha 0 laisse une arete nette la ou sa
+# boite s'arrete. C'est exactement le bug des barres verticales.
+scrim_css = re.search(r"\.scrim\{[^}]*\}", html)
+if not scrim_css:
+    fails.append("voile .scrim introuvable")
+else:
+    stops = re.findall(r"rgba\([^)]*?,\s*([\d.]+)\)\s*([\d.]+)%", scrim_css.group(0))
+    if not stops:
+        fails.append("voile .scrim : impossible de lire les paliers")
+    else:
+        last_alpha, last_pos = stops[-1]
+        if float(last_alpha) != 0 or float(last_pos) != 100:
+            fails.append(
+                f"voile .scrim : dernier palier alpha={last_alpha} a {last_pos}% "
+                "-- doit etre alpha 0 a 100% sinon son bord se voit"
+            )
+        else:
+            print("OK  voile .scrim transparent a 100% : aucun bord visible")
+
+# --- 7. poids ---------------------------------------------------------
 kb = PAGE.stat().st_size / 1024
 print(f"\nPoids : {kb:.0f} Ko (page autonome, zero fichier externe)")
 if kb > 700:

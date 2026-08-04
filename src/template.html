@@ -82,6 +82,19 @@ body{
   to  {transform:translate3d(-6%,-5%,0) scale(1)     rotate(-9deg)}
 }
 
+/* Voile sombre plein écran : assombrit le centre pour que le texte blanc
+   reste lisible sur les zones claires du dégradé.
+   Il couvre tout l'écran et devient transparent avant les bords : aucune
+   arête ne peut apparaître, contrairement à un voile calé sur le contenu. */
+.scrim{
+  position:fixed; inset:0; z-index:4; pointer-events:none;
+  background:radial-gradient(ellipse 68% 58% at 50% 48%,
+             rgba(44,16,100,.40) 0%,
+             rgba(44,16,100,.26) 45%,
+             rgba(44,16,100,.10) 75%,
+             rgba(44,16,100,0)   100%);
+}
+
 /* grain léger pour casser les bandes du dégradé */
 .grain{
   position:fixed; inset:-50%; z-index:2; pointer-events:none;
@@ -166,15 +179,6 @@ body{
   gap:clamp(20px,4.2vh,30px);
 }
 
-/* scrim sombre derrière le contenu : garantit la lisibilité du blanc
-   même au centre clair du dégradé */
-.wrap::before{
-  content:''; position:absolute; inset:-4% -8% -4% -8%; z-index:-1;
-  background:radial-gradient(ellipse 74% 60% at 50% 46%,
-             rgba(46,18,102,.42) 0%, rgba(46,18,102,.22) 55%, rgba(46,18,102,0) 78%);
-  pointer-events:none;
-}
-
 /* logo */
 .logo{width:min(64%,238px); height:auto; display:block;
       filter:drop-shadow(0 6px 20px rgba(60,25,120,.5));
@@ -183,8 +187,8 @@ body{
   margin:0; text-align:center;
   font-size:clamp(11px,2.9vw,13px); font-weight:700;
   letter-spacing:.24em; text-transform:uppercase;
-  color:rgba(255,255,255,.94);
-  text-shadow:0 1px 10px rgba(70,30,140,.45);
+  color:#fff;
+  text-shadow:0 1px 3px rgba(40,12,92,.55), 0 2px 18px rgba(40,12,92,.5);
   animation:rise .7s .07s cubic-bezier(.2,.7,.3,1) both;
 }
 
@@ -373,7 +377,8 @@ footer{
 footer img{width:82px; height:auto; opacity:.68; margin-bottom:9px}
 footer p{
   margin:0; font-size:10px; font-weight:700; letter-spacing:.22em; text-transform:uppercase;
-  color:rgba(255,255,255,.8); text-shadow:0 1px 8px rgba(40,12,95,.55);
+  color:rgba(255,255,255,.86);
+  text-shadow:0 1px 3px rgba(40,12,92,.55), 0 2px 14px rgba(40,12,92,.5);
 }
 
 @keyframes rise{
@@ -412,6 +417,7 @@ footer p{
 
 <div class="bg"></div>
 <div class="grain"></div>
+<div class="scrim"></div>
 
 <!-- blobs chromés -->
 <div class="chrome c-tl"><img src="__C2__" alt="" aria-hidden="true"></div>
