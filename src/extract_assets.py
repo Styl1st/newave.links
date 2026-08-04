@@ -101,9 +101,69 @@ def extract_white(src: str, name: str, width: int, invert: bool = False) -> None
     save(Image.fromarray(np.dstack([white, sub]), "RGBA"), name, width)
 
 
+# ---------------------------------------------------------------------
+# 3. Icones de navigateur, construites sur le monogramme NW
+# ---------------------------------------------------------------------
+def make_icons() -> None:
+    """favicon (coins arrondis, transparent) + icone iOS (carre plein).
+
+    iOS ne gere pas la transparence sur les apple-touch-icon et applique
+    son propre arrondi : on lui fournit donc un carre plein non arrondi.
+    """
+    from PIL import ImageDraw
+
+    # monogramme noir sur blanc -> masque alpha
+    src = Image.open(SOURCES / "mark-source.jpg").convert("RGB")
+    arr = np.asarray(src).astype(np.float32)
+    alpha = np.clip((215 - arr.max(axis=2)) / 95.0, 0, 1)
+    ys, xs = np.where(alpha > 0.5)
+    mark = Image.fromarray(
+        (alpha[ys.min():ys.max() + 1, xs.min():xs.max() + 1] * 255).astype(np.uint8)
+    )
+
+    def build(size: int, rounded: bool) -> Image.Image:
+        # fond degrade bleu -> magenta, repris des couleurs du site
+        grad = Image.new("RGB", (size, size))
+        px = grad.load()
+        c0, c1 = (78, 91, 192), (194, 85, 196)
+        for y in range(size):
+            for x in range(size):
+                k = (x + y) / (2 * size - 2)
+                px[x, y] = tuple(int(a + (b - a) * k) for a, b in zip(c0, c1))
+
+        icon = grad.convert("RGBA")
+        if rounded:
+            mask = Image.new("L", (size, size), 0)
+            ImageDraw.Draw(mask).rounded_rectangle(
+                [0, 0, size - 1, size - 1], radius=int(size * 0.22), fill=255
+            )
+            icon.putalpha(mask)
+
+        # monogramme blanc centre
+        w = int(size * 0.86)
+        h = max(1, round(w * mark.height / mark.width))
+        m = mark.resize((w, h), Image.LANCZOS)
+        white = Image.new("RGBA", (w, h), (255, 255, 255, 255))
+        white.putalpha(m)
+        icon.alpha_composite(white, ((size - w) // 2, (size - h) // 2))
+        return icon
+
+    for size in (32, 180, 512):
+        rounded = size != 180              # 180 = iOS, carre plein
+        icon = build(size, rounded)
+        name = {32: "favicon-32", 180: "apple-touch-icon", 512: "icon-512"}[size]
+        out = icon if rounded else icon.convert("RGB")
+        out.save(ASSETS / f"{name}.png", optimize=True)
+        kb = (ASSETS / f"{name}.png").stat().st_size / 1024
+        print(f"  {name:18s} {size}x{size}  {kb:.0f} Ko"
+              f"{'' if rounded else '  (carre plein pour iOS)'}")
+
+
 if __name__ == "__main__":
     extract_chrome()
     print("Logo :")
     extract_white("logo-source.jpg", "logo-white", 560)
     extract_white("mark-source.jpg", "mark-white", 300, invert=True)
+    print("Icones :")
+    make_icons()
     print("\nTermine. Relance ensuite : python src/build.py")

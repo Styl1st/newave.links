@@ -42,12 +42,18 @@ IMAGES = {
     "__C3__": "chrome3.webp",
     "__LOGO__": "logo-white.webp",
     "__MARK__": "mark-white.webp",
+    # icones de navigateur (png : le webp n'est pas accepte comme favicon
+    # par tous les navigateurs)
+    "__ICON32__": "favicon-32.png",
+    "__ICON180__": "apple-touch-icon.png",
 }
 
 
 def b64(name: str) -> str:
+    """Encode un asset en data URI, type MIME deduit de l'extension."""
+    mime = "image/png" if name.endswith(".png") else "image/webp"
     data = (ASSETS / name).read_bytes()
-    return "data:image/webp;base64," + base64.b64encode(data).decode()
+    return f"data:{mime};base64," + base64.b64encode(data).decode()
 
 
 def main() -> None:

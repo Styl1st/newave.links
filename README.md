@@ -58,7 +58,9 @@ sont en haut de la section contrastes du script, avec le pire cas simulé
 
 ```
 index.html              la page finale — fichier GÉNÉRÉ, ne pas éditer à la main
+apple-touch-icon.png    icône iOS (iOS la cherche à la racine du site)
 assets/                 images détourées (webp servi, png = qualité max)
+                        + icônes de navigateur
 src/
   template.html         le vrai fichier source : HTML + CSS + JS
   build.py              injecte assets + liens dans le template -> index.html
@@ -156,6 +158,22 @@ Il sort en erreur (utilisable en CI) si :
 
 Il avertit sans bloquer si des unités `vh` réapparaissent (peu fiables sur
 mobile, préférer `svh`) ou si un lien est encore vide.
+
+### Icônes de navigateur
+
+Générées depuis le monogramme NW sur un dégradé bleu → magenta :
+
+| Fichier | Taille | Usage |
+|---|---|---|
+| `favicon-32.png` | 32 px | onglet du navigateur, coins arrondis transparents |
+| `apple-touch-icon.png` | 180 px | écran d'accueil iOS, **carré plein** |
+| `icon-512.png` | 512 px | réserve (manifeste, gros affichages) |
+
+L'icône iOS est volontairement opaque et non arrondie : iOS ne gère pas la
+transparence sur ce format et applique son propre arrondi.
+
+Les deux premières sont embarquées dans `index.html`. `apple-touch-icon.png`
+est aussi copiée à la racine, car iOS la cherche là par défaut.
 
 ### Regénérer les images
 
