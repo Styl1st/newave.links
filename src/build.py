@@ -18,7 +18,7 @@ from pathlib import Path
 LINKS = {
     # Laisse "#" tant que le site du projet n'existe pas : le bouton passe
     # automatiquement en mode "Bientot" au lieu d'etre un lien mort.
-    "__URL_SITE__": "#",
+    "__URL_SITE__": "https://preview.newavesphere.fr",
     "__URL_IG__": "https://www.instagram.com/newave.sphere/",
     "__URL_TT__": "https://www.tiktok.com/@newave.sphere",
     "__IG_HANDLE__": "@newave.sphere",
@@ -37,6 +37,16 @@ LINKS = {
     # le jour ou tu passes sur un nom de domaine.
     "__BASE_URL__": "https://newavesphere.fr",
 }
+
+# Le site est-il encore en beta fermee ?
+#
+# Il tourne, mais derriere un mot de passe : envoyer tout le monde dessus
+# sans le dire, c'est promettre une porte et livrer un mur. Le bouton
+# annonce donc ce qu'on y trouve.
+#
+# Le jour de l'ouverture publique : passer a False, remplacer
+# __URL_SITE__ par https://newavesphere.fr, et relancer le build.
+SITE_EN_BETA = True
 # =====================================================================
 
 SRC = Path(__file__).resolve().parent
@@ -115,10 +125,15 @@ def main() -> None:
         "__NL_STATE__": " is-off" if no_newsletter else "",
         "__FB_STATE__": " show" if no_newsletter else "",
         "__SITE_STATE__": " soon" if coming_soon else "",
-        "__SITE_TAG__": "Bientôt" if coming_soon else "Le projet",
+        "__SITE_TAG__": (
+            "Bientôt" if coming_soon
+            else "Bêta" if SITE_EN_BETA
+            else "Le projet"
+        ),
         "__SITE_SUB__": (
             "Le site arrive très vite" if coming_soon
-            else "Boutique, articles &amp; univers"
+            else "Version de test — accès sur demande" if SITE_EN_BETA
+            else "Marques, articles &amp; univers"
         ),
     }
 
@@ -187,6 +202,9 @@ def main() -> None:
     if coming_soon:
         print("   note : bouton du site en mode 'Bientôt' "
               "(renseigne __URL_SITE__ pour l'activer)")
+    elif SITE_EN_BETA:
+        print("   note : bouton du site en mode 'Bêta' "
+              "(passe SITE_EN_BETA a False le jour de l'ouverture)")
     if not base:
         print("   note : apercu de partage desactive "
               "(renseigne __BASE_URL__ pour l'activer)")
