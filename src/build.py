@@ -132,7 +132,10 @@ def main() -> None:
         ),
         "__SITE_SUB__": (
             "Le site arrive très vite" if coming_soon
-            else "Version de test — accès sur demande" if SITE_EN_BETA
+            # Tiret court volontaire : le tiret cadratin est devenu un
+            # marqueur de texte genere, et il n'a pas sa place sur une
+            # page qui doit sonner comme quelqu'un.
+            else "Version de test - accès sur demande" if SITE_EN_BETA
             else "Marques, articles &amp; univers"
         ),
     }
